@@ -25,6 +25,11 @@ def predict_scoreing(y_true, y_pred):
     # Print the results
     print(f"MAE: {mae:.2f}, Range-MAE: {range_mae:.2f}, F1: {f1:.2f}, Final Score: {score:.2f}")
 
+# Define a callback function to print the results of the validation set
+def print_validation_result(env):
+    result = env.evaluation_result_list[-1]
+    print(f"[{env.iteration}] {result[1]}'s {result[0]}: {result[2]}")
+
 
 if __name__ == '__main__':
     wine_quality = fetch_ucirepo(id=186)
@@ -36,7 +41,7 @@ if __name__ == '__main__':
     # concate ft and targ
     df = pd.concat([X, y], axis=1)
 
-    df_submit = df
+    df_output = df
 
     X_train, X_test, y_train, y_test = train_test_split(
         df.iloc[:, :-1],
@@ -48,10 +53,7 @@ if __name__ == '__main__':
     train_data = lgb.Dataset(X_train, label=y_train)
     test_data = lgb.Dataset(X_test, label=y_test, reference=train_data)
 
-    # Define a callback function to print the results of the validation set
-    def print_validation_result(env):
-        result = env.evaluation_result_list[-1]
-        print(f"[{env.iteration}] {result[1]}'s {result[0]}: {result[2]}")
+
 
     params = {
         "boosting_type": "gbdt",
@@ -72,7 +74,7 @@ if __name__ == '__main__':
 
     prediction = gbm.predict(df.iloc[:, :-1]).astype(int)
 
-    df_submit["quality_prediction"] = prediction
-    df_submit.to_csv(("output/output_"+datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + ".csv"), header=None, index=False)
+    df_output["quality_prediction"] = prediction
+    df_output.to_csv(("output/output_"+datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + ".csv"), header=None, index=False)
 
-    predict_scoreing(df_submit["quality"], df_submit["quality_prediction"])
+    predict_scoreing(df_output["quality"], df_output["quality_prediction"])
