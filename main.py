@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, f1_score
 
 
-def predict_scoreing(y_true, y_pred):
+def predict_scoreing(y_true: pd.DataFrame, y_pred: pd.DataFrame):
     # Calculate Mean Absolute Error (MAE)
     mae = mean_absolute_error(y_true, y_pred)
 
@@ -26,7 +26,7 @@ def predict_scoreing(y_true, y_pred):
     print(f"MAE: {mae:.2f}, Range-MAE: {range_mae:.2f}, F1: {f1:.2f}, Final Score: {score:.2f}")
 
 # Define a callback function to print the results of the validation set
-def print_validation_result(env):
+def print_validation_result(env: pd.Series):
     result = env.evaluation_result_list[-1]
     print(f"[{env.iteration}] {result[1]}'s {result[0]}: {result[2]}")
 
