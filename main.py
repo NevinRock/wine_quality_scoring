@@ -4,6 +4,7 @@ import pandas as pd
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, f1_score
+import numpy as np
 
 
 def predict_scoreing(y_true: pd.DataFrame, y_pred: pd.DataFrame):
@@ -72,7 +73,9 @@ if __name__ == '__main__':
         callbacks=[print_validation_result],
     )
 
-    prediction = gbm.predict(df.iloc[:, :-1]).astype(int)
+    # prediction = gbm.predict(df.iloc[:, :-1]).astype(int)
+
+    prediction = np.round(gbm.predict(df.iloc[:, :-1]))
 
     df_output["quality_prediction"] = prediction
     df_output.to_csv(("output/output_"+datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + ".csv"), header=None, index=False)
